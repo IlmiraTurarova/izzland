@@ -5,7 +5,9 @@ import animalHierarchy.Alive;
 import animalHierarchy.Animal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import species.dump.Dump;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Data
@@ -17,13 +19,13 @@ public class Cell extends Thread{
 
     @Override
     public void run() {
-        synchronized (this) {
+
+        synchronized (Dump.animalIsland[x][y].animals) {
             for (int i = 0; i < animals.size(); i++) {
                 if (animals.get(i) instanceof Animal) {
-
                     ((Animal) animals.get(i)).move();
-                    ((Animal) animals.get(i)).eat();
-                     ((Animal) animals.get(i)).beEaten();
+                    //((Animal) animals.get(i)).eat();
+                     //((Animal) animals.get(i)).beEaten();
 
                 }
             }

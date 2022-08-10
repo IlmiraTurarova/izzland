@@ -14,7 +14,7 @@ public class Dump {
     public static
     ThreadLocalRandom randomIndex = ThreadLocalRandom.current();
     public static AnimalFactory factory = new AnimalFactory();
-    public static Cell[][] animalIsland = new Cell[10][10];
+    public volatile static Cell[][] animalIsland = new Cell[10][10];
 
     public static void filInSpecies() {
         species.add(AnimalType.WOLF);
@@ -80,9 +80,7 @@ public class Dump {
     public static void triggerCell() {
         for (int i = 0; i < animalIsland.length; i++) {
             for (int j = 0; j < animalIsland[0].length; j++) {
-                System.out.println("ДО"+Arrays.deepToString(Dump.animalIsland));
                 animalIsland[i][j].run();
-                System.out.println("ПОСЛЕ"+Arrays.deepToString(Dump.animalIsland));
             }
 
         }
@@ -92,7 +90,9 @@ public class Dump {
         filInSpecies();
         filInIsland();
         fillInParams();
+        System.out.println("ДО"+ Arrays.deepToString(Dump.animalIsland));
         triggerCell();
+        System.out.println("ДО"+ Arrays.deepToString(Dump.animalIsland));
     }
 
 }

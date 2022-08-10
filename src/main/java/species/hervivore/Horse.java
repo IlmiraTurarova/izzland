@@ -101,8 +101,12 @@ public class Horse extends Herbivore {
             int newy=y;
 
             //Dump.animalIsland[oldx][oldy].animals.remove(this);
-            Dump.animalIsland[newx][newy].animals.add(this);
-            Dump.animalIsland[oldx][oldy].animals.removeIf(x->x==this);
+            synchronized (Dump.animalIsland[oldx][oldy]) {
+                Dump.animalIsland[oldx][oldy].animals.removeIf(x -> x == this);
+            }
+            synchronized (Dump.animalIsland[newx][newy]) {
+                Dump.animalIsland[newx][newy].animals.add(this);
+            }
 
 
         }catch(Exception e){
