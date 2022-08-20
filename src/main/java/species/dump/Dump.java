@@ -3,6 +3,7 @@ package species.dump;
 
 import animalHierarchy.*;
 import island.Cell;
+import species.plants.Plant;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +43,9 @@ public class Dump {
                     AnimalType animalType = species.get(randomIndex.nextInt(0, species.size()));
                     animalsIn.add(factory.createAnimal(animalType));
                 }
+                for (int k = 0; k < 6; k++) {
+                    animalsIn.add(new Plant());
+                }
                 animalIsland[i][j] = new Cell(i, j, animalsIn);
             }
         }
@@ -62,7 +66,7 @@ public class Dump {
                                 ((Herbivore) alive).setY(j);
                             }
                         }
-                    } else {
+                    } else if(alive instanceof Carnivore){
                         String className = alive.getClass().getName().toUpperCase().split("\\.")[2];
                         for (AnimalType type : species) {
                             if (className.equals(type.name())) {
@@ -71,6 +75,9 @@ public class Dump {
                                 ((Carnivore) alive).setY(j);
                             }
                         }
+                    } else if(alive instanceof Plant){
+                        ((Plant) alive).setX(i);
+                        ((Plant) alive).setX(j);
                     }
                 }
             }
@@ -91,8 +98,11 @@ public class Dump {
         filInIsland();
         fillInParams();
         System.out.println("ДО"+ Arrays.deepToString(Dump.animalIsland));
+        Stats stats = new Stats();
+        stats.printStats();
         triggerCell();
-        System.out.println("ДО"+ Arrays.deepToString(Dump.animalIsland));
+        System.out.println("После"+ Arrays.deepToString(Dump.animalIsland));
+        stats.printStats();
     }
 
 }

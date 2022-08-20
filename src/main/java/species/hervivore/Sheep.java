@@ -12,6 +12,7 @@ import species.carnivore.Wolf;
 import species.dump.Dump;
 import species.plants.Plant;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -31,7 +32,8 @@ public class Sheep extends Herbivore implements Animal {
                 tillFull = type.getEatTillFull();
             }
         }
-
+        List<Alive> alivezincell=new ArrayList<>();
+        alivezincell.addAll(Dump.animalIsland[x][y].animals);
         ListIterator<Alive> iter = Dump.animalIsland[x][y].animals.listIterator();
         while(iter.hasNext()) {
             Alive alive=iter.next();
@@ -41,12 +43,16 @@ public class Sheep extends Herbivore implements Animal {
             } else {
                 this.weight += eaten;
             }
+            double weightBeginningToHunt=this.weight;
             if (alive instanceof Plant) {
                 eaten += ((Plant) alive).getWeight();
-                synchronized (Dump.animalIsland[x][y]) {
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
+                    alivezincell.remove(alive);
             }
+            double weightEndOfHunt=this.weight+eaten;
+            if(weightBeginningToHunt==weightEndOfHunt){
+                this.weight=this.weight-(this.weight*0.01);
+            }
+            Dump.animalIsland[x][y].animals= alivezincell;
         }
     }
 
@@ -123,7 +129,17 @@ public class Sheep extends Herbivore implements Animal {
 
     @Override
     public void starveAndDie() {
-
+        Double idealWeight=0.0;
+        for(AnimalType type: Dump.species){
+            if(type.name().equalsIgnoreCase("Sheep")){
+                idealWeight=type.getEatTillFull();
+            }
+        }
+        if(this.weight<(idealWeight*0.5)){
+            synchronized (Dump.animalIsland[x][y]) {
+                Dump.animalIsland[x][y].animals.removeIf(x -> x == this);
+            }
+        }
     }
 
     public void multiply(){

@@ -188,8 +188,6 @@ public class Wolf extends Carnivore {
 
     public void multiply(){
         int couple=0;
-        System.out.println("До размножения "+Dump.animalIsland[x][y].animals
-                .stream().filter(animal -> animal instanceof Wolf).count());
         for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
             if(Dump.animalIsland[x][y].animals.get(i) ==this) {
                 couple++;
@@ -205,8 +203,6 @@ public class Wolf extends Carnivore {
                 Dump.animalIsland[x][y].animals.add(new Wolf());
             }
         }
-        System.out.println("После размножения "+Dump.animalIsland[x][y].animals
-                .stream().filter(animal -> animal instanceof Wolf).count());
-    }
+            }
 
 }
