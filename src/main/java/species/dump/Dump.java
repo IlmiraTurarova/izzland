@@ -87,7 +87,7 @@ public class Dump {
     public static void triggerCell() {
         for (int i = 0; i < animalIsland.length; i++) {
             for (int j = 0; j < animalIsland[0].length; j++) {
-                animalIsland[i][j].run();
+                animalIsland[i][j].start();
             }
 
         }
