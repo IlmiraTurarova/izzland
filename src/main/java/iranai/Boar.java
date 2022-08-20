@@ -1,15 +1,13 @@
-package species.carnivore;
-
+package iranai;
 
 import animalHierarchy.Alive;
-import animalHierarchy.Animal;
 import animalHierarchy.AnimalType;
-import animalHierarchy.Carnivore;
+import animalHierarchy.Herbivore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import species.dump.Dump;
-import species.hervivore.*;
+import species.plants.Plant;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -18,22 +16,21 @@ import java.util.concurrent.ThreadLocalRandom;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bear extends Carnivore implements Animal {
+public class Boar extends Herbivore {
     static ThreadLocalRandom randomN = ThreadLocalRandom.current();
     private int x;
     private int y;
     private double weight;
 
     @Override
-    public void eat() {
+    public synchronized void eat() {
         double tillFull = 0;
         double eaten = 0;
         for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Bear")) {
+            if (type.name().equalsIgnoreCase("Boar")) {
                 tillFull = type.getEatTillFull();
             }
         }
-
         Double number = randomN.nextDouble();
         ListIterator<Alive> iter = Dump.animalIsland[x][y].animals.listIterator();
         while(iter.hasNext()) {
@@ -44,59 +41,27 @@ public class Bear extends Carnivore implements Animal {
             } else {
                 this.weight += eaten;
             }
-            if (alive instanceof Boa) {
-                if (number <= 0.80) {
-                    eaten += ((Boa) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            } else if (alive instanceof Horse) {
-                if (number <= 0.40) {
-                    eaten += ((Horse) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            } else if (alive instanceof Deer) {
-                if (number <= 0.80) {
-                    eaten += ((Deer) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            } else if (alive instanceof Rabbit) {
-                if (number <= 0.80) {
-                    eaten += ((Rabbit) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            } else if (alive instanceof Mouse) {
-                if (number <= 0.90) {
-                    eaten += ((Mouse) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            } else if (alive instanceof Goat) {
-                if (number <= 0.70) {
-                    eaten += ((Goat) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            } else if (alive instanceof Sheep) {
-                if (number <= 0.70) {
-                    eaten += ((Sheep) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            } else if (alive instanceof Boar) {
+            if (alive instanceof Mouse) {
                 if (number <= 0.50) {
-                    eaten += ((Boar) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                    eaten += ((Mouse) alive).getWeight();
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
                 }
-            } else if (alive instanceof Buffalo) {
-                if (number <= 0.20) {
-                    eaten += ((Buffalo) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+            } else if (alive instanceof Caterpillar) {
+                if (number <= 0.90) {
+                    eaten += ((Caterpillar) alive).getWeight();
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
                 }
-            } else if (alive instanceof Duck) {
-                if (number <= 0.10) {
-                    eaten += ((Duck) alive).getWeight();
+            } else if (alive instanceof Plant) {
+                eaten += ((Plant) alive).getWeight();
+                synchronized (Dump.animalIsland[x][y]) {
                     Dump.animalIsland[x][y].animals.remove(alive);
                 }
             }
         }
-
     }
 
     @Override
@@ -105,7 +70,7 @@ public class Bear extends Carnivore implements Animal {
         int oldy = y;
         int speed = 0;
         for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Bear")) {
+            if (type.name().equalsIgnoreCase("Boar")) {
                 speed = type.getSpeed();
             }
         }
@@ -155,6 +120,7 @@ public class Bear extends Carnivore implements Animal {
             }
             int newx = x;
             int newy = y;
+
             //Dump.animalIsland[oldx][oldy].animals.remove(this);
             synchronized (Dump.animalIsland[oldx][oldy]) {
                 Dump.animalIsland[oldx][oldy].animals.removeIf(x -> x == this);
@@ -163,11 +129,13 @@ public class Bear extends Carnivore implements Animal {
                 Dump.animalIsland[newx][newy].animals.add(this);
             }
 
+
         } catch (Exception e) {
             move();
         }
-
     }
+
+
 
     @Override
     public void starveAndDie() {
@@ -175,10 +143,7 @@ public class Bear extends Carnivore implements Animal {
     }
 
     @Override
-    public void beEaten() {
-        List<Alive> foodAndRivals = Dump.animalIsland[x][y].animals;
-        if(!foodAndRivals.contains(this)){
-            System.out.println(this.getClass().getSimpleName()+" Eaten");
-        }
+    public void multiply() {
+
     }
 }

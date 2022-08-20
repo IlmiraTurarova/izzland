@@ -1,4 +1,4 @@
-package species.hervivore;
+package iranai;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
@@ -22,7 +22,7 @@ public class Mouse extends Herbivore {
     private int y;
     private double weight;
     @Override
-    public void eat() {
+    public synchronized void eat() {
         double tillFull = 0;
         double eaten = 0;
         for (AnimalType type : Dump.species) {
@@ -44,11 +44,15 @@ public class Mouse extends Herbivore {
             if (alive instanceof Caterpillar) {
                 if (number <= 0.90) {
                     eaten += ((Caterpillar) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
                 }
             }else if(alive instanceof Plant){
                 eaten += ((Plant) alive).getWeight();
-                Dump.animalIsland[x][y].animals.remove(alive);
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.remove(alive);
+                }
             }
         }
     }
@@ -124,16 +128,14 @@ public class Mouse extends Herbivore {
         }
     }
 
-    @Override
-    public void beEaten() {
-        List<Alive> foodAndRivals = Dump.animalIsland[x][y].animals;
-        if(!foodAndRivals.contains(this)){
-            System.out.println(this.getClass().getSimpleName()+" Eaten");
-        }
-    }
 
     @Override
     public void starveAndDie() {
+
+    }
+
+    @Override
+    public void multiply() {
 
     }
 }

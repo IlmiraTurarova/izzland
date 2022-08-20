@@ -3,12 +3,14 @@ package species.carnivore;
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
 import animalHierarchy.Carnivore;
+import iranai.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import species.dump.Dump;
 import species.hervivore.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.ThreadLocalRandom;
@@ -32,7 +34,10 @@ public class Wolf extends Carnivore {
         }
 
         Double number=randomN.nextDouble();
+        List<Alive> alivezincell=new ArrayList<>();
+        alivezincell.addAll(Dump.animalIsland[x][y].animals);
         ListIterator<Alive> iter = Dump.animalIsland[x][y].animals.listIterator();
+        double weightBeginningToHunt=this.weight;
         while(iter.hasNext()) {
             Alive alive=iter.next();
             if(eaten>=tillFull){
@@ -44,55 +49,60 @@ public class Wolf extends Carnivore {
             if(alive instanceof Horse){
                 if(number<=0.10){
                     eaten+= ((Horse) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                        alivezincell.remove(alive);
                 }
             }else if(alive instanceof Deer){
                 if(number<=0.15){
                     eaten+= ((Deer) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                        alivezincell.remove(alive);
                 }
             }else if(alive instanceof Rabbit){
                 if(number<=0.60){
                     eaten+= ((Rabbit) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                        alivezincell.remove(alive);
                 }
             }else if(alive instanceof Mouse){
                 if(number<=0.80){
                     eaten+= ((Mouse) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                        alivezincell.remove(alive);
                 }
             }else if(alive instanceof Goat){
                 if(number<=0.60){
                     eaten+= ((Goat) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                        alivezincell.remove(alive);
                 }
             }else if(alive instanceof Sheep){
                 if(number<=0.70){
                     eaten+= ((Sheep) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                        alivezincell.remove(alive);
                 }
             }else if(alive instanceof Boar){
                 if(number<=0.15){
                     eaten+= ((Boar) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                        alivezincell.remove(alive);
                 }
             }else if(alive instanceof Buffalo){
                 if(number<=0.10){
                     eaten+= ((Buffalo) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                        alivezincell.remove(alive);
                 }
             }else if(alive instanceof Duck){
                 if(number<=0.40){
                     eaten+= ((Duck) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                        alivezincell.remove(alive);
                 }
             }
+            double weightEndOfHunt=this.weight+eaten;
+            if(weightBeginningToHunt==weightEndOfHunt){
+                this.weight=this.weight-(this.weight*0.01);
+            }
+            Dump.animalIsland[x][y].animals=alivezincell;
         }
 
     }
 
     @Override
-    public void move() {
+    public synchronized void move() {
         int oldx=x;
         int oldy=y;
         int speed=0;
@@ -148,7 +158,6 @@ public class Wolf extends Carnivore {
             int newx=x;
             int newy=y;
 
-            //Dump.animalIsland[oldx][oldy].animals.remove(this);
             synchronized (Dump.animalIsland[oldx][oldy]) {
                 Dump.animalIsland[oldx][oldy].animals.removeIf(x -> x == this);
             }
@@ -164,14 +173,40 @@ public class Wolf extends Carnivore {
 
     @Override
     public void starveAndDie() {
-
-    }
-
-    @Override
-    public void beEaten() {
-        List<Alive> foodAndRivals = Dump.animalIsland[x][y].animals;
-        if(!foodAndRivals.contains(this)){
-            System.out.println(this.getClass().getSimpleName()+" Eaten");
+        Double idealWeight=0.0;
+        for(AnimalType type: Dump.species){
+            if(type.name().equalsIgnoreCase("Wolf")){
+                idealWeight=type.getEatTillFull();
+            }
+        }
+        if(this.weight<(idealWeight*0.5)){
+            synchronized (Dump.animalIsland[x][y]) {
+                Dump.animalIsland[x][y].animals.removeIf(x -> x == this);
+            }
         }
     }
+
+    public void multiply(){
+        int couple=0;
+        System.out.println("До размножения "+Dump.animalIsland[x][y].animals
+                .stream().filter(animal -> animal instanceof Wolf).count());
+        for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
+            if(Dump.animalIsland[x][y].animals.get(i) ==this) {
+                couple++;
+            }
+            if(Dump.animalIsland[x][y].animals.get(i) !=this
+                    &&  Dump.animalIsland[x][y].animals.get(i) instanceof Wolf){
+                couple++;
+                break;
+            }
+        }
+        if(couple==2){
+            synchronized (Dump.animalIsland[x][y]) {
+                Dump.animalIsland[x][y].animals.add(new Wolf());
+            }
+        }
+        System.out.println("После размножения "+Dump.animalIsland[x][y].animals
+                .stream().filter(animal -> animal instanceof Wolf).count());
+    }
+
 }

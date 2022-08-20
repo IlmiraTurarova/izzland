@@ -1,4 +1,4 @@
-package species.hervivore;
+package iranai;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
@@ -15,16 +15,16 @@ import java.util.ListIterator;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Goat extends Herbivore {
+public class Deer extends Herbivore {
     private int x;
     private int y;
     private double weight;
     @Override
-    public void eat() {
+    public synchronized void eat() {
         double tillFull = 0;
         double eaten = 0;
         for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Goat")) {
+            if (type.name().equalsIgnoreCase("Deer")) {
                 tillFull = type.getEatTillFull();
             }
         }
@@ -39,7 +39,9 @@ public class Goat extends Herbivore {
             }
             if (alive instanceof Plant) {
                 eaten += ((Plant) alive).getWeight();
-                Dump.animalIsland[x][y].animals.remove(alive);
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.remove(alive);
+                }
             }
         }
     }
@@ -50,7 +52,7 @@ public class Goat extends Herbivore {
         int oldy=y;
         int speed=0;
         for(AnimalType type: Dump.species){
-            if(type.name().equalsIgnoreCase("Goat")){
+            if(type.name().equalsIgnoreCase("Deer")){
                 speed=type.getSpeed();
             }
         }
@@ -115,16 +117,14 @@ public class Goat extends Herbivore {
         }
     }
 
-    @Override
-    public void beEaten() {
-        List<Alive> foodAndRivals = Dump.animalIsland[x][y].animals;
-        if(!foodAndRivals.contains(this)){
-            System.out.println(this.getClass().getSimpleName()+" Eaten");
-        }
-    }
 
     @Override
     public void starveAndDie() {
+
+    }
+
+    @Override
+    public void multiply() {
 
     }
 }

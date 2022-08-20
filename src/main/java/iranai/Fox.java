@@ -1,15 +1,12 @@
-package species.carnivore;
+package iranai;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
-import animalHierarchy.Herbivore;
+import animalHierarchy.Carnivore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import species.dump.Dump;
-import species.hervivore.Duck;
-import species.hervivore.Mouse;
-import species.hervivore.Rabbit;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -18,17 +15,17 @@ import java.util.concurrent.ThreadLocalRandom;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Boa extends Herbivore {
+public class Fox extends Carnivore {
     static ThreadLocalRandom randomN = ThreadLocalRandom.current();
     private int x;
     private int y;
     private double weight;
     @Override
-    public void eat() {
+    public synchronized void eat() {
         double tillFull=0;
         double eaten=0;
         for(AnimalType type: Dump.species){
-            if(type.name().equalsIgnoreCase("Boa")){
+            if(type.name().equalsIgnoreCase("Fox")){
                 tillFull=type.getEatTillFull();
             }
         }
@@ -42,28 +39,37 @@ public class Boa extends Herbivore {
             }else{
                 this.weight+=eaten;
             }
-            if(alive instanceof Fox){
-                if(number<=0.15){
-                    eaten+= ((Fox) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            }else if(alive instanceof Rabbit){
-                if(number<=0.20){
+            if(alive instanceof Rabbit){
+                if(number<=0.70){
                     eaten+= ((Rabbit) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
                 }
             }else if(alive instanceof Mouse){
-                if(number<=0.40){
+                if(number<=0.90){
                     eaten+= ((Mouse) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
                 }
             }else if(alive instanceof Duck){
-                if(number<=0.10){
+                if(number<=0.60){
                     eaten+= ((Duck) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
+                }
+            }else if(alive instanceof Caterpillar){
+                if(number<=0.40){
+                    eaten+= ((Caterpillar) alive).getWeight();
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
                 }
             }
         }
+
     }
 
     @Override
@@ -72,7 +78,7 @@ public class Boa extends Herbivore {
         int oldy=y;
         int speed=0;
         for(AnimalType type: Dump.species){
-            if(type.name().equalsIgnoreCase("Boa")){
+            if(type.name().equalsIgnoreCase("Fox")){
                 speed=type.getSpeed();
             }
         }
@@ -122,6 +128,8 @@ public class Boa extends Herbivore {
             }
             int newx=x;
             int newy=y;
+
+            //Dump.animalIsland[oldx][oldy].animals.remove(this);
             synchronized (Dump.animalIsland[oldx][oldy]) {
                 Dump.animalIsland[oldx][oldy].animals.removeIf(x -> x == this);
             }
@@ -136,15 +144,14 @@ public class Boa extends Herbivore {
     }
 
     @Override
-    public void beEaten() {
-        List<Alive> foodAndRivals = Dump.animalIsland[x][y].animals;
-        if(!foodAndRivals.contains(this)){
-            System.out.println(this.getClass().getSimpleName()+" Eaten");
-        }
-    }
-
-    @Override
     public void starveAndDie() {
 
     }
+
+    @Override
+    public void multiply() {
+
+    }
+
+
 }

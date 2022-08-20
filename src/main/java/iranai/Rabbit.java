@@ -1,4 +1,4 @@
-package species.hervivore;
+package iranai;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
@@ -15,19 +15,21 @@ import java.util.ListIterator;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Deer extends Herbivore {
+public class Rabbit extends Herbivore {
     private int x;
     private int y;
     private double weight;
+
     @Override
-    public void eat() {
+    public synchronized void eat() {
         double tillFull = 0;
         double eaten = 0;
         for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Deer")) {
+            if (type.name().equalsIgnoreCase("Rabbit")) {
                 tillFull = type.getEatTillFull();
             }
         }
+
         ListIterator<Alive> iter = Dump.animalIsland[x][y].animals.listIterator();
         while(iter.hasNext()) {
             Alive alive=iter.next();
@@ -39,7 +41,9 @@ public class Deer extends Herbivore {
             }
             if (alive instanceof Plant) {
                 eaten += ((Plant) alive).getWeight();
-                Dump.animalIsland[x][y].animals.remove(alive);
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.remove(alive);
+                }
             }
         }
     }
@@ -50,7 +54,7 @@ public class Deer extends Herbivore {
         int oldy=y;
         int speed=0;
         for(AnimalType type: Dump.species){
-            if(type.name().equalsIgnoreCase("Deer")){
+            if(type.name().equalsIgnoreCase("Rabbit")){
                 speed=type.getSpeed();
             }
         }
@@ -101,7 +105,7 @@ public class Deer extends Herbivore {
             int newx=x;
             int newy=y;
 
-            //Dump.animalIsland[oldx][oldy].animals.remove(this);
+           // Dump.animalIsland[oldx][oldy].animals.remove(this);
             synchronized (Dump.animalIsland[oldx][oldy]) {
                 Dump.animalIsland[oldx][oldy].animals.removeIf(x -> x == this);
             }
@@ -115,16 +119,14 @@ public class Deer extends Herbivore {
         }
     }
 
-    @Override
-    public void beEaten() {
-        List<Alive> foodAndRivals = Dump.animalIsland[x][y].animals;
-        if(!foodAndRivals.contains(this)){
-            System.out.println(this.getClass().getSimpleName()+" Eaten");
-        }
-    }
 
     @Override
     public void starveAndDie() {
+
+    }
+
+    @Override
+    public void multiply() {
 
     }
 }

@@ -1,33 +1,35 @@
-package species.hervivore;
+package iranai;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
-import animalHierarchy.Herbivore;
+import animalHierarchy.Carnivore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import species.dump.Dump;
-import species.plants.Plant;
 
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Horse extends Herbivore {
+public class Eagle extends Carnivore {
+    static ThreadLocalRandom randomN = ThreadLocalRandom.current();
     private int x;
     private int y;
     private double weight;
     @Override
-    public void eat() {
+    public synchronized void eat() {
         double tillFull = 0;
         double eaten = 0;
         for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Plant")) {
+            if (type.name().equalsIgnoreCase("Eagle")) {
                 tillFull = type.getEatTillFull();
             }
         }
+        Double number = randomN.nextDouble();
         ListIterator<Alive> iter = Dump.animalIsland[x][y].animals.listIterator();
         while(iter.hasNext()) {
             Alive alive=iter.next();
@@ -37,9 +39,34 @@ public class Horse extends Herbivore {
             } else {
                 this.weight += eaten;
             }
-            if (alive instanceof Plant) {
-                eaten += ((Plant) alive).getWeight();
-                Dump.animalIsland[x][y].animals.remove(alive);
+            if (alive instanceof Fox) {
+                if (number <= 0.10) {
+                    eaten += ((Fox) alive).getWeight();
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
+                }
+            } else if (alive instanceof Rabbit) {
+                if (number <= 0.90) {
+                    eaten += ((Rabbit) alive).getWeight();
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
+                }
+            } else if (alive instanceof Mouse) {
+                if (number <= 0.90) {
+                    eaten += ((Mouse) alive).getWeight();
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
+                }
+            } else if (alive instanceof Duck) {
+                if (number <= 0.80) {
+                    eaten += ((Duck) alive).getWeight();
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
+                }
             }
         }
     }
@@ -48,9 +75,10 @@ public class Horse extends Herbivore {
     public void move() {
         int oldx=x;
         int oldy=y;
+
         int speed=0;
         for(AnimalType type: Dump.species){
-            if(type.name().equalsIgnoreCase("Horse")){
+            if(type.name().equalsIgnoreCase("Eagle")){
                 speed=type.getSpeed();
             }
         }
@@ -97,7 +125,8 @@ public class Horse extends Herbivore {
                     y+=speed;
                     throw new Exception();
                 }
-            }int newx=x;
+            }
+            int newx=x;
             int newy=y;
 
             //Dump.animalIsland[oldx][oldy].animals.remove(this);
@@ -109,16 +138,9 @@ public class Horse extends Herbivore {
             }
 
 
+
         }catch(Exception e){
             move();
-        }
-    }
-
-    @Override
-    public void beEaten() {
-        List<Alive> foodAndRivals = Dump.animalIsland[x][y].animals;
-        if(!foodAndRivals.contains(this)){
-            System.out.println(this.getClass().getSimpleName()+" Eaten");
         }
     }
 
@@ -126,4 +148,10 @@ public class Horse extends Herbivore {
     public void starveAndDie() {
 
     }
+
+    @Override
+    public void multiply() {
+
+    }
+
 }

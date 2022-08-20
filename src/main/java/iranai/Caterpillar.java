@@ -1,4 +1,4 @@
-package species.hervivore;
+package iranai;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
@@ -11,26 +11,23 @@ import species.plants.Plant;
 
 import java.util.List;
 import java.util.ListIterator;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Duck extends Herbivore {
-    static ThreadLocalRandom randomN = ThreadLocalRandom.current();
+public class Caterpillar extends Herbivore {
     private int x;
     private int y;
     private double weight;
     @Override
-    public void eat() {
+    public synchronized void eat() {
         double tillFull = 0;
         double eaten = 0;
         for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Duck")) {
+            if (type.name().equalsIgnoreCase("Caterpillar")) {
                 tillFull = type.getEatTillFull();
             }
         }
-        Double number = randomN.nextDouble();
         ListIterator<Alive> iter = Dump.animalIsland[x][y].animals.listIterator();
         while(iter.hasNext()) {
             Alive alive=iter.next();
@@ -40,14 +37,11 @@ public class Duck extends Herbivore {
             } else {
                 this.weight += eaten;
             }
-            if (alive instanceof Caterpillar) {
-                if (number <= 0.90) {
-                    eaten += ((Caterpillar) alive).getWeight();
+            if (alive instanceof Plant) {
+                eaten += ((Plant) alive).getWeight();
+                synchronized (Dump.animalIsland[x][y]) {
                     Dump.animalIsland[x][y].animals.remove(alive);
                 }
-            } else if (alive instanceof Plant) {
-                eaten += ((Plant) alive).getWeight();
-                Dump.animalIsland[x][y].animals.remove(alive);
             }
         }
     }
@@ -58,7 +52,7 @@ public class Duck extends Herbivore {
         int oldy=y;
         int speed=0;
         for(AnimalType type: Dump.species){
-            if(type.name().equalsIgnoreCase("Duck")){
+            if(type.name().equalsIgnoreCase("Caterpillar")){
                 speed=type.getSpeed();
             }
         }
@@ -109,7 +103,7 @@ public class Duck extends Herbivore {
             int newx=x;
             int newy=y;
 
-           // Dump.animalIsland[oldx][oldy].animals.remove(this);
+            //Dump.animalIsland[oldx][oldy].animals.remove(this);
             synchronized (Dump.animalIsland[oldx][oldy]) {
                 Dump.animalIsland[oldx][oldy].animals.removeIf(x -> x == this);
             }
@@ -123,16 +117,14 @@ public class Duck extends Herbivore {
         }
     }
 
-    @Override
-    public void beEaten() {
-        List<Alive> foodAndRivals = Dump.animalIsland[x][y].animals;
-        if(!foodAndRivals.contains(this)){
-            System.out.println(this.getClass().getSimpleName()+" Eaten");
-        }
-    }
 
     @Override
     public void starveAndDie() {
+
+    }
+
+    @Override
+    public void multiply() {
 
     }
 }

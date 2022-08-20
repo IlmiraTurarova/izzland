@@ -1,5 +1,6 @@
 package animalHierarchy;
 
+import iranai.*;
 import species.carnivore.*;
 import species.hervivore.*;
 

@@ -1,15 +1,13 @@
-package species.carnivore;
+package iranai;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
-import animalHierarchy.Carnivore;
+import animalHierarchy.Herbivore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import species.dump.Dump;
-import species.hervivore.Duck;
-import species.hervivore.Mouse;
-import species.hervivore.Rabbit;
+import species.plants.Plant;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -18,17 +16,17 @@ import java.util.concurrent.ThreadLocalRandom;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Eagle extends Carnivore {
+public class Duck extends Herbivore {
     static ThreadLocalRandom randomN = ThreadLocalRandom.current();
     private int x;
     private int y;
     private double weight;
     @Override
-    public void eat() {
+    public synchronized void eat() {
         double tillFull = 0;
         double eaten = 0;
         for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Eagle")) {
+            if (type.name().equalsIgnoreCase("Duck")) {
                 tillFull = type.getEatTillFull();
             }
         }
@@ -42,24 +40,16 @@ public class Eagle extends Carnivore {
             } else {
                 this.weight += eaten;
             }
-            if (alive instanceof Fox) {
-                if (number <= 0.10) {
-                    eaten += ((Fox) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            } else if (alive instanceof Rabbit) {
+            if (alive instanceof Caterpillar) {
                 if (number <= 0.90) {
-                    eaten += ((Rabbit) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
+                    eaten += ((Caterpillar) alive).getWeight();
+                    synchronized (Dump.animalIsland[x][y]) {
+                        Dump.animalIsland[x][y].animals.remove(alive);
+                    }
                 }
-            } else if (alive instanceof Mouse) {
-                if (number <= 0.90) {
-                    eaten += ((Mouse) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            } else if (alive instanceof Duck) {
-                if (number <= 0.80) {
-                    eaten += ((Duck) alive).getWeight();
+            } else if (alive instanceof Plant) {
+                eaten += ((Plant) alive).getWeight();
+                synchronized (Dump.animalIsland[x][y]) {
                     Dump.animalIsland[x][y].animals.remove(alive);
                 }
             }
@@ -70,10 +60,9 @@ public class Eagle extends Carnivore {
     public void move() {
         int oldx=x;
         int oldy=y;
-
         int speed=0;
         for(AnimalType type: Dump.species){
-            if(type.name().equalsIgnoreCase("Eagle")){
+            if(type.name().equalsIgnoreCase("Duck")){
                 speed=type.getSpeed();
             }
         }
@@ -124,14 +113,13 @@ public class Eagle extends Carnivore {
             int newx=x;
             int newy=y;
 
-            //Dump.animalIsland[oldx][oldy].animals.remove(this);
+           // Dump.animalIsland[oldx][oldy].animals.remove(this);
             synchronized (Dump.animalIsland[oldx][oldy]) {
                 Dump.animalIsland[oldx][oldy].animals.removeIf(x -> x == this);
             }
             synchronized (Dump.animalIsland[newx][newy]) {
                 Dump.animalIsland[newx][newy].animals.add(this);
             }
-
 
 
         }catch(Exception e){
@@ -145,10 +133,7 @@ public class Eagle extends Carnivore {
     }
 
     @Override
-    public void beEaten() {
-        List<Alive> foodAndRivals = Dump.animalIsland[x][y].animals;
-        if(!foodAndRivals.contains(this)){
-            System.out.println(this.getClass().getSimpleName()+" Eaten");
-        }
+    public void multiply() {
+
     }
 }

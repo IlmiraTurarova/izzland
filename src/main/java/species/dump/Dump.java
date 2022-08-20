@@ -18,20 +18,20 @@ public class Dump {
 
     public static void filInSpecies() {
         species.add(AnimalType.WOLF);
-        species.add(AnimalType.BOA);
-        species.add(AnimalType.FOX);
-        species.add(AnimalType.BEAR);
-        species.add(AnimalType.EAGLE);
-        species.add(AnimalType.HORSE);
-        species.add(AnimalType.DEER);
-        species.add(AnimalType.RABBIT);
-        species.add(AnimalType.MOUSE);
-        species.add(AnimalType.GOAT);
+//        species.add(AnimalType.BOA);
+//        species.add(AnimalType.FOX);
+//        species.add(AnimalType.BEAR);
+//        species.add(AnimalType.EAGLE);
+//        species.add(AnimalType.HORSE);
+//        species.add(AnimalType.DEER);
+//        species.add(AnimalType.RABBIT);
+//        species.add(AnimalType.MOUSE);
+//        species.add(AnimalType.GOAT);
         species.add(AnimalType.SHEEP);
-        species.add(AnimalType.BOAR);
-        species.add(AnimalType.BUFFALO);
-        species.add(AnimalType.DUCK);
-        species.add(AnimalType.CATERPILLAR);
+//        species.add(AnimalType.BOAR);
+//        species.add(AnimalType.BUFFALO);
+//        species.add(AnimalType.DUCK);
+//        species.add(AnimalType.CATERPILLAR);
     }
 
     public static void filInIsland() throws InstantiationException, IllegalAccessException {

@@ -1,4 +1,4 @@
-package species.hervivore;
+package iranai;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
@@ -11,27 +11,23 @@ import species.plants.Plant;
 
 import java.util.List;
 import java.util.ListIterator;
-import java.util.concurrent.ThreadLocalRandom;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Boar extends Herbivore {
-    static ThreadLocalRandom randomN = ThreadLocalRandom.current();
+public class Horse extends Herbivore {
     private int x;
     private int y;
     private double weight;
-
     @Override
-    public void eat() {
+    public synchronized void eat() {
         double tillFull = 0;
         double eaten = 0;
         for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Boar")) {
+            if (type.name().equalsIgnoreCase("Plant")) {
                 tillFull = type.getEatTillFull();
             }
         }
-        Double number = randomN.nextDouble();
         ListIterator<Alive> iter = Dump.animalIsland[x][y].animals.listIterator();
         while(iter.hasNext()) {
             Alive alive=iter.next();
@@ -41,38 +37,30 @@ public class Boar extends Herbivore {
             } else {
                 this.weight += eaten;
             }
-            if (alive instanceof Mouse) {
-                if (number <= 0.50) {
-                    eaten += ((Mouse) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            } else if (alive instanceof Caterpillar) {
-                if (number <= 0.90) {
-                    eaten += ((Caterpillar) alive).getWeight();
-                    Dump.animalIsland[x][y].animals.remove(alive);
-                }
-            } else if (alive instanceof Plant) {
+            if (alive instanceof Plant) {
                 eaten += ((Plant) alive).getWeight();
-                Dump.animalIsland[x][y].animals.remove(alive);
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.remove(alive);
+                }
             }
         }
     }
 
     @Override
     public void move() {
-        int oldx = x;
-        int oldy = y;
-        int speed = 0;
-        for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Boar")) {
-                speed = type.getSpeed();
+        int oldx=x;
+        int oldy=y;
+        int speed=0;
+        for(AnimalType type: Dump.species){
+            if(type.name().equalsIgnoreCase("Horse")){
+                speed=type.getSpeed();
             }
         }
-        int random = (int) (Math.random() * 4);
-        try {
-            if (random == 0) {
+        int random=(int)(Math.random()*4);
+        try{
+            if(random==0) {
                 x += speed;
-                if (x > Dump.animalIsland.length) {
+                if(x>Dump.animalIsland.length){
                     x -= speed;
                     throw new Exception();
                 }
@@ -80,9 +68,9 @@ public class Boar extends Herbivore {
                     x -= speed;
                     throw new Exception();
                 }
-            } else if (random == 1) {
+            }else if(random==1) {
                 y += speed;
-                if (y > Dump.animalIsland[0].length) {
+                if(y>Dump.animalIsland[0].length){
                     y -= speed;
                     throw new Exception();
                 }
@@ -90,30 +78,29 @@ public class Boar extends Herbivore {
                     y -= speed;
                     throw new Exception();
                 }
-            } else if (random == 2) {
+            }else if(random==2){
 
-                x -= speed;
-                if (x > Dump.animalIsland.length) {
+                x-=speed;
+                if(x>Dump.animalIsland.length){
                     x += speed;
                     throw new Exception();
                 }
-                if (x < 0) {
-                    x += speed;
+                if(x<0){
+                    x+=speed;
                     throw new Exception();
                 }
-            } else {
-                y -= speed;
-                if (y > Dump.animalIsland[0].length) {
-                    y += speed;
+            }else{
+                y-=speed;
+                if(y>Dump.animalIsland[0].length){
+                    y+=speed;
                     throw new Exception();
                 }
-                if (y < 0) {
-                    y += speed;
+                if(y<0){
+                    y+=speed;
                     throw new Exception();
                 }
-            }
-            int newx = x;
-            int newy = y;
+            }int newx=x;
+            int newy=y;
 
             //Dump.animalIsland[oldx][oldy].animals.remove(this);
             synchronized (Dump.animalIsland[oldx][oldy]) {
@@ -124,21 +111,18 @@ public class Boar extends Herbivore {
             }
 
 
-        } catch (Exception e) {
+        }catch(Exception e){
             move();
         }
     }
 
     @Override
-    public void beEaten() {
-        List<Alive> foodAndRivals = Dump.animalIsland[x][y].animals;
-        if(!foodAndRivals.contains(this)){
-            System.out.println(this.getClass().getSimpleName()+" Eaten");
-        }
+    public void starveAndDie() {
+
     }
 
     @Override
-    public void starveAndDie() {
+    public void multiply() {
 
     }
 }

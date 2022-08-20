@@ -7,5 +7,5 @@ public interface Animal extends Alive {
 
     void starveAndDie();
 
-    void beEaten();
+    void multiply();
 }

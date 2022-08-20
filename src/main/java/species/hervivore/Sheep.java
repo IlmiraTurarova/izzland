@@ -8,6 +8,7 @@ import animalHierarchy.Herbivore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import species.carnivore.Wolf;
 import species.dump.Dump;
 import species.plants.Plant;
 
@@ -22,7 +23,7 @@ public class Sheep extends Herbivore implements Animal {
     private int y;
     private double weight;
     @Override
-    public void eat() {
+    public synchronized void eat() {
         double tillFull = 0;
         double eaten = 0;
         for (AnimalType type : Dump.species) {
@@ -42,13 +43,15 @@ public class Sheep extends Herbivore implements Animal {
             }
             if (alive instanceof Plant) {
                 eaten += ((Plant) alive).getWeight();
-                Dump.animalIsland[x][y].animals.remove(alive);
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.remove(alive);
+                }
             }
         }
     }
 
     @Override
-    public void move() {
+    public synchronized void move() {
         int oldx=x;
         int oldy=y;
         int speed=0;
@@ -119,15 +122,26 @@ public class Sheep extends Herbivore implements Animal {
     }
 
     @Override
-    public void beEaten() {
-       List<Alive> foodAndRivals = Dump.animalIsland[x][y].animals;
-        if(!foodAndRivals.contains(this)){
-            System.out.println(this.getClass().getSimpleName()+" Eaten");
-        }
-    }
-
-    @Override
     public void starveAndDie() {
 
     }
+
+    public void multiply(){
+        int couple=0;
+        for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
+            if(Dump.animalIsland[x][y].animals.get(i) ==this) {
+                couple++;
+            }
+            if(Dump.animalIsland[x][y].animals.get(i) !=this
+                    &&  Dump.animalIsland[x][y].animals.get(i) instanceof Sheep){
+                couple++;
+            }
+        }
+        if(couple==2){
+            synchronized (Dump.animalIsland[x][y]) {
+                Dump.animalIsland[x][y].animals.add(this);
+            }
+        }
+    }
+
 }

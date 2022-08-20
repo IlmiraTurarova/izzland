@@ -9,6 +9,5 @@ public abstract class Herbivore implements Animal{
     private double weight;
     public abstract void eat();
     public abstract void move();
-    public abstract void beEaten();
     public abstract void starveAndDie();
 }
