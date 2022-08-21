@@ -8,6 +8,8 @@ import species.plants.Plant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Dump {
@@ -93,16 +95,31 @@ public class Dump {
         }
     }
 
-    public static void main(String[] args) throws InstantiationException, IllegalAccessException {
+    public static void main(String[] args) throws InstantiationException, IllegalAccessException, InterruptedException {
         filInSpecies();
         filInIsland();
         fillInParams();
-        System.out.println("ДО"+ Arrays.deepToString(Dump.animalIsland));
+//        System.out.println("ДО"+ Arrays.deepToString(Dump.animalIsland));
+//        Stats stats = new Stats();
+//        stats.printStats();
+//
+//        triggerCell();
+//        System.out.println("После"+ Arrays.deepToString(Dump.animalIsland));
+//        stats.printStats();
         Stats stats = new Stats();
-        stats.printStats();
-        triggerCell();
-        System.out.println("После"+ Arrays.deepToString(Dump.animalIsland));
-        stats.printStats();
-    }
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+        for (int k = 0; k < 10; k++) {
+            System.out.println("День "+k+":");
+            for (int i = 0; i < animalIsland.length; i++) {
+                for (int j = 0; j < animalIsland[0].length; j++) {
+                    executorService.execute(animalIsland[i][j]);
+                }
+            }
+
+            stats.printStats();
+            Thread.sleep(1000);
+        }
+        executorService.shutdown();    }
 
 }
