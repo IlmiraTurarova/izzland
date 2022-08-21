@@ -8,9 +8,7 @@ import species.plants.Plant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.*;
 
 public class Dump {
     public static List<AnimalType> species = new ArrayList<>();
@@ -120,6 +118,26 @@ public class Dump {
             stats.printStats();
             Thread.sleep(1000);
         }
-        executorService.shutdown();    }
+        executorService.shutdown();
+        //как добавить рост растений в основной цикл именно пулом?
+        ScheduledExecutorService executorService1 = Executors.newScheduledThreadPool(2);
+        executorService1.scheduleAtFixedRate(new addGrass(), 0, 2, TimeUnit.SECONDS);
+        Thread.sleep(10000);
+        executorService1.shutdown();
 
+    }
+
+
+}
+class addGrass implements Runnable{
+    public void run(){
+        for (int i = 0; i < Dump.animalIsland.length; i++) {
+            for (int j = 0; j <  Dump.animalIsland[0].length; j++) {
+                for (int k = 0; k < 100; k++) {
+                    Dump.animalIsland[i][j].animals.add(new Plant());
+                }
+
+            }
+        }
+    }
 }
