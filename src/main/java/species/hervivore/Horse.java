@@ -1,43 +1,42 @@
-package species.carnivore;
+package species.hervivore;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
-import animalHierarchy.Carnivore;
+import animalHierarchy.Herbivore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import species.dump.Dump;
-import species.hervivore.*;
+import species.plants.Plant;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Wolf extends Carnivore {
-    static ThreadLocalRandom randomN = ThreadLocalRandom.current();
+public class Horse extends Herbivore {
     private int x;
     private int y;
     private double weight;
+    static ThreadLocalRandom randomN = ThreadLocalRandom.current();
 
     @Override
     public synchronized void eat() {
         double tillFull = 0;
         double eaten = 0;
         for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Wolf")) {
+            if (type.name().equalsIgnoreCase("Plant")) {
                 tillFull = type.getEatTillFull();
             }
         }
-
         Double number = randomN.nextDouble();
         List<Alive> alivezincell = new ArrayList<>();
         synchronized (Dump.animalIsland[x][y].animals) {
             alivezincell.addAll(Dump.animalIsland[x][y].animals);
         }
-
         double weightBeginningToHunt = this.weight;
         for (int i = 0; i < alivezincell.size(); i++) {
             Alive alive = alivezincell.get(i);
@@ -47,50 +46,10 @@ public class Wolf extends Carnivore {
             } else {
                 this.weight += eaten;
             }
-            if (alive instanceof Horse) {
-                if (number <= 0.10) {
-                    eaten += ((Horse) alive).getWeight();
-                    alivezincell.remove(alive);
-                }
-            } else if (alive instanceof Deer) {
-                if (number <= 0.15) {
-                    eaten += ((Deer) alive).getWeight();
-                    alivezincell.remove(alive);
-                }
-            } else if (alive instanceof Rabbit) {
-                if (number <= 0.60) {
-                    eaten += ((Rabbit) alive).getWeight();
-                    alivezincell.remove(alive);
-                }
-            } else if (alive instanceof Mouse) {
-                if (number <= 0.80) {
-                    eaten += ((Mouse) alive).getWeight();
-                    alivezincell.remove(alive);
-                }
-            } else if (alive instanceof Goat) {
-                if (number <= 0.60) {
-                    eaten += ((Goat) alive).getWeight();
-                    alivezincell.remove(alive);
-                }
-            } else if (alive instanceof Sheep) {
-                if (number <= 0.70) {
-                    eaten += ((Sheep) alive).getWeight();
-                    alivezincell.remove(alive);
-                }
-            } else if (alive instanceof Boar) {
-                if (number <= 0.15) {
-                    eaten += ((Boar) alive).getWeight();
-                    alivezincell.remove(alive);
-                }
-            } else if (alive instanceof Buffalo) {
-                if (number <= 0.10) {
-                    eaten += ((Buffalo) alive).getWeight();
-                    alivezincell.remove(alive);
-                }
-            } else if (alive instanceof Duck) {
-                if (number <= 0.40) {
-                    eaten += ((Duck) alive).getWeight();
-                    alivezincell.remove(alive);
+            if (alive instanceof Plant) {
+                eaten += ((Plant) alive).getWeight();
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.remove(alive);
                 }
             }
         }
@@ -101,14 +60,13 @@ public class Wolf extends Carnivore {
         Dump.animalIsland[x][y].animals = alivezincell;
     }
 
-
     @Override
-    public synchronized void move() {
+    public void move() {
         int oldx = x;
         int oldy = y;
         int speed = 0;
         for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Wolf")) {
+            if (type.name().equalsIgnoreCase("Horse")) {
                 speed = type.getSpeed();
             }
         }
@@ -159,6 +117,7 @@ public class Wolf extends Carnivore {
             int newx = x;
             int newy = y;
 
+            //Dump.animalIsland[oldx][oldy].animals.remove(this);
             synchronized (Dump.animalIsland[oldx][oldy]) {
                 Dump.animalIsland[oldx][oldy].animals.removeIf(x -> x == this);
             }
@@ -173,10 +132,10 @@ public class Wolf extends Carnivore {
     }
 
     @Override
-    public synchronized void starveAndDie() {
+    public void starveAndDie() {
         Double idealWeight = 0.0;
         for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Wolf")) {
+            if (type.name().equalsIgnoreCase("Horse")) {
                 idealWeight = type.getEatTillFull();
             }
         }
@@ -187,7 +146,8 @@ public class Wolf extends Carnivore {
         }
     }
 
-    public synchronized void multiply() {
+    @Override
+    public void multiply() {
         int couple = 0;
         for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
             synchronized (Dump.animalIsland[x][y].animals) {
@@ -195,17 +155,17 @@ public class Wolf extends Carnivore {
                     couple++;
                 }
                 if (Dump.animalIsland[x][y].animals.get(i) != this
-                        && Dump.animalIsland[x][y].animals.get(i) instanceof Wolf) {
+                        && Dump.animalIsland[x][y].animals.get(i) instanceof Horse) {
                     couple++;
                     break;
                 }
             }
             if (couple == 2) {
                 synchronized (Dump.animalIsland[x][y]) {
-                    Dump.animalIsland[x][y].animals.add(new Wolf());
+                    Dump.animalIsland[x][y].animals.add(new Horse());
                 }
             }
         }
     }
-
 }
+

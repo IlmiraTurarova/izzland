@@ -6,9 +6,10 @@ import island.Cell;
 import species.plants.Plant;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Dump {
     public static List<AnimalType> species = new ArrayList<>();
@@ -19,23 +20,23 @@ public class Dump {
 
     public static void filInSpecies() {
         species.add(AnimalType.WOLF);
-//        species.add(AnimalType.BOA);
-//        species.add(AnimalType.FOX);
-//        species.add(AnimalType.BEAR);
-//        species.add(AnimalType.EAGLE);
-//        species.add(AnimalType.HORSE);
-//        species.add(AnimalType.DEER);
-//        species.add(AnimalType.RABBIT);
-//        species.add(AnimalType.MOUSE);
-//        species.add(AnimalType.GOAT);
+        species.add(AnimalType.BOA);
+        species.add(AnimalType.FOX);
+        species.add(AnimalType.BEAR);
+        species.add(AnimalType.EAGLE);
+        species.add(AnimalType.HORSE);
+        species.add(AnimalType.DEER);
+        species.add(AnimalType.RABBIT);
+        species.add(AnimalType.MOUSE);
+        species.add(AnimalType.GOAT);
         species.add(AnimalType.SHEEP);
-//        species.add(AnimalType.BOAR);
-//        species.add(AnimalType.BUFFALO);
-//        species.add(AnimalType.DUCK);
-//        species.add(AnimalType.CATERPILLAR);
+        species.add(AnimalType.BOAR);
+        species.add(AnimalType.BUFFALO);
+        species.add(AnimalType.DUCK);
+        species.add(AnimalType.CATERPILLAR);
     }
 
-    public static void filInIsland() throws InstantiationException, IllegalAccessException {
+    public static void filInIsland() {
         for (int i = 0; i < animalIsland.length; i++) {
             for (int j = 0; j < animalIsland[0].length; j++) {
                 List<Alive> animalsIn = new ArrayList<>();
@@ -82,62 +83,34 @@ public class Dump {
                 }
             }
         }
-        System.out.println(Arrays.deepToString(animalIsland));
-    }
-    public static void triggerCell() {
-        for (int i = 0; i < animalIsland.length; i++) {
-            for (int j = 0; j < animalIsland[0].length; j++) {
-                animalIsland[i][j].start();
-            }
-
-        }
     }
 
-    public static void main(String[] args) throws InstantiationException, IllegalAccessException, InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
         filInSpecies();
         filInIsland();
         fillInParams();
-//        System.out.println("ДО"+ Arrays.deepToString(Dump.animalIsland));
-//        Stats stats = new Stats();
-//        stats.printStats();
-//
-//        triggerCell();
-//        System.out.println("После"+ Arrays.deepToString(Dump.animalIsland));
-//        stats.printStats();
         Stats stats = new Stats();
-        ExecutorService executorService = Executors.newFixedThreadPool(3);
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
 
-        for (int k = 0; k < 10; k++) {
+        for (int k = 0; k < 31; k++) {
             System.out.println("День "+k+":");
+            if(k%5==0){
+                for (int i = 0; i < animalIsland.length; i++) {
+                    for (int j = 0; j < animalIsland[0].length; j++) {
+                        for (int l = 0; l < 2; l++) {
+                            animalIsland[i][j].animals.add(new Plant());
+                        }
+                    }
+                }
+            }
             for (int i = 0; i < animalIsland.length; i++) {
                 for (int j = 0; j < animalIsland[0].length; j++) {
                     executorService.execute(animalIsland[i][j]);
                 }
             }
-
             stats.printStats();
             Thread.sleep(1000);
         }
         executorService.shutdown();
-        //как добавить рост растений в основной цикл именно пулом?
-        ScheduledExecutorService executorService1 = Executors.newScheduledThreadPool(2);
-        executorService1.scheduleAtFixedRate(new addGrass(), 0, 2, TimeUnit.SECONDS);
-        Thread.sleep(10000);
-        executorService1.shutdown();
-
-    }
-
-
-}
-class addGrass implements Runnable{
-    public void run(){
-        for (int i = 0; i < Dump.animalIsland.length; i++) {
-            for (int j = 0; j <  Dump.animalIsland[0].length; j++) {
-                for (int k = 0; k < 100; k++) {
-                    Dump.animalIsland[i][j].animals.add(new Plant());
-                }
-
-            }
-        }
     }
 }

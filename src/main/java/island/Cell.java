@@ -18,7 +18,6 @@ public class Cell extends Thread {
 
     @Override
     public void run() {
-
         synchronized (Dump.animalIsland[x][y].animals) {
             for (int i = 0; i < animals.size(); i++) {
                 if (animals.get(i) instanceof Animal) {
@@ -47,7 +46,6 @@ public class Cell extends Thread {
                 }
             }
         }
-
     }
 }
 

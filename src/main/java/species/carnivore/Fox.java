@@ -1,15 +1,19 @@
-package iranai;
+package species.carnivore;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
 import animalHierarchy.Carnivore;
+import species.hervivore.Caterpillar;
+import species.hervivore.Duck;
+import species.hervivore.Mouse;
+import species.hervivore.Rabbit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import species.dump.Dump;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Data
@@ -30,9 +34,13 @@ public class Fox extends Carnivore {
             }
         }
         Double number=randomN.nextDouble();
-        ListIterator<Alive> iter = Dump.animalIsland[x][y].animals.listIterator();
-        while(iter.hasNext()) {
-            Alive alive=iter.next();
+        List<Alive> alivezincell = new ArrayList<>();
+        synchronized (Dump.animalIsland[x][y].animals) {
+            alivezincell.addAll(Dump.animalIsland[x][y].animals);
+        }
+        double weightBeginningToHunt = this.weight;
+        for (int i = 0; i < alivezincell.size(); i++) {
+            Alive alive = alivezincell.get(i);
             if(eaten>=tillFull){
                 this.weight+=tillFull;
                 break;
@@ -69,7 +77,11 @@ public class Fox extends Carnivore {
                 }
             }
         }
-
+        double weightEndOfHunt = this.weight + eaten;
+        if (weightBeginningToHunt == weightEndOfHunt) {
+            this.weight = this.weight - (this.weight * 0.5);
+        }
+        Dump.animalIsland[x][y].animals = alivezincell;
     }
 
     @Override
@@ -129,7 +141,7 @@ public class Fox extends Carnivore {
             int newx=x;
             int newy=y;
 
-            //Dump.animalIsland[oldx][oldy].animals.remove(this);
+
             synchronized (Dump.animalIsland[oldx][oldy]) {
                 Dump.animalIsland[oldx][oldy].animals.removeIf(x -> x == this);
             }
@@ -145,12 +157,39 @@ public class Fox extends Carnivore {
 
     @Override
     public void starveAndDie() {
-
+        Double idealWeight = 0.0;
+        for (AnimalType type : Dump.species) {
+            if (type.name().equalsIgnoreCase("Fox")) {
+                idealWeight = type.getEatTillFull();
+            }
+        }
+        if (this.weight < (idealWeight * 0.5)) {
+            synchronized (Dump.animalIsland[x][y]) {
+                Dump.animalIsland[x][y].animals.removeIf(x -> x == this);
+            }
+        }
     }
 
     @Override
     public void multiply() {
-
+        int couple = 0;
+        for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
+            synchronized (Dump.animalIsland[x][y].animals) {
+                if (Dump.animalIsland[x][y].animals.get(i) == this) {
+                    couple++;
+                }
+                if (Dump.animalIsland[x][y].animals.get(i) != this
+                        && Dump.animalIsland[x][y].animals.get(i) instanceof Fox) {
+                    couple++;
+                    break;
+                }
+            }
+        }
+        if (couple == 2) {
+            synchronized (Dump.animalIsland[x][y]) {
+                Dump.animalIsland[x][y].animals.add(new Fox());
+            }
+        }
     }
 
 

@@ -1,4 +1,4 @@
-package iranai;
+package species.carnivore;
 
 
 import animalHierarchy.Alive;
@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 import species.dump.Dump;
 import species.hervivore.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Data
@@ -35,9 +35,13 @@ public class Bear extends Carnivore implements Animal {
         }
 
         Double number = randomN.nextDouble();
-        ListIterator<Alive> iter = Dump.animalIsland[x][y].animals.listIterator();
-        while(iter.hasNext()) {
-            Alive alive=iter.next();
+        List<Alive> alivezincell = new ArrayList<>();
+        synchronized (Dump.animalIsland[x][y].animals) {
+            alivezincell.addAll(Dump.animalIsland[x][y].animals);
+        }
+        double weightBeginningToHunt = this.weight;
+        for (int i = 0; i < alivezincell.size(); i++) {
+            Alive alive = alivezincell.get(i);
             if (eaten >= tillFull) {
                 this.weight += tillFull;
                 break;
@@ -116,6 +120,11 @@ public class Bear extends Carnivore implements Animal {
                 }
             }
         }
+        double weightEndOfHunt = this.weight + eaten;
+        if (weightBeginningToHunt == weightEndOfHunt) {
+            this.weight = this.weight - (this.weight * 0.5);
+        }
+        Dump.animalIsland[x][y].animals = alivezincell;
 
     }
 
@@ -191,12 +200,39 @@ public class Bear extends Carnivore implements Animal {
 
     @Override
     public void starveAndDie() {
-
+        Double idealWeight = 0.0;
+        for (AnimalType type : Dump.species) {
+            if (type.name().equalsIgnoreCase("Bear")) {
+                idealWeight = type.getEatTillFull();
+            }
+        }
+        if (this.weight < (idealWeight * 0.5)) {
+            synchronized (Dump.animalIsland[x][y]) {
+                Dump.animalIsland[x][y].animals.removeIf(x -> x == this);
+            }
+        }
     }
 
     @Override
     public void multiply() {
-
+        int couple = 0;
+        for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
+            synchronized (Dump.animalIsland[x][y].animals) {
+                if (Dump.animalIsland[x][y].animals.get(i) == this) {
+                    couple++;
+                }
+                if (Dump.animalIsland[x][y].animals.get(i) != this
+                        && Dump.animalIsland[x][y].animals.get(i) instanceof Bear) {
+                    couple++;
+                    break;
+                }
+            }
+        }
+        if (couple == 2) {
+            synchronized (Dump.animalIsland[x][y]) {
+                Dump.animalIsland[x][y].animals.add(new Bear());
+            }
+        }
     }
 
 

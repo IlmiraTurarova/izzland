@@ -1,4 +1,4 @@
-package iranai;
+package species.hervivore;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalType;
@@ -6,8 +6,12 @@ import animalHierarchy.Herbivore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import species.carnivore.Wolf;
 import species.dump.Dump;
+import species.hervivore.Caterpillar;
+import species.plants.Plant;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.ThreadLocalRandom;
@@ -15,60 +19,55 @@ import java.util.concurrent.ThreadLocalRandom;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Boa extends Herbivore {
+public class Mouse extends Herbivore {
     static ThreadLocalRandom randomN = ThreadLocalRandom.current();
     private int x;
     private int y;
     private double weight;
     @Override
     public synchronized void eat() {
-        double tillFull=0;
-        double eaten=0;
-        for(AnimalType type: Dump.species){
-            if(type.name().equalsIgnoreCase("Boa")){
-                tillFull=type.getEatTillFull();
+        double tillFull = 0;
+        double eaten = 0;
+        for (AnimalType type : Dump.species) {
+            if (type.name().equalsIgnoreCase("Mouse")) {
+                tillFull = type.getEatTillFull();
             }
         }
-        Double number=randomN.nextDouble();
-        ListIterator<Alive> iter = Dump.animalIsland[x][y].animals.listIterator();
-        while(iter.hasNext()) {
-            Alive alive=iter.next();
-            if(eaten>=tillFull){
-                this.weight+=tillFull;
+
+        Double number = randomN.nextDouble();
+        List<Alive> alivezincell = new ArrayList<>();
+        synchronized (Dump.animalIsland[x][y].animals) {
+            alivezincell.addAll(Dump.animalIsland[x][y].animals);
+        }
+        double weightBeginningToHunt = this.weight;
+        for (int i = 0; i < alivezincell.size(); i++) {
+            Alive alive = alivezincell.get(i);
+            if (eaten >= tillFull) {
+                this.weight += tillFull;
                 break;
-            }else{
-                this.weight+=eaten;
+            } else {
+                this.weight += eaten;
             }
-            if(alive instanceof Fox){
-                if(number<=0.15){
-                    eaten+= ((Fox) alive).getWeight();
+            if (alive instanceof Caterpillar) {
+                if (number <= 0.90) {
+                    eaten += ((Caterpillar) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
                     }
                 }
-            }else if(alive instanceof Rabbit){
-                if(number<=0.20){
-                    eaten+= ((Rabbit) alive).getWeight();
-                    synchronized (Dump.animalIsland[x][y]) {
-                        Dump.animalIsland[x][y].animals.remove(alive);
-                    }
-                }
-            }else if(alive instanceof Mouse){
-                if(number<=0.40){
-                    eaten+= ((Mouse) alive).getWeight();
-                    synchronized (Dump.animalIsland[x][y]) {
-                        Dump.animalIsland[x][y].animals.remove(alive);
-                    }
-                }
-            }else if(alive instanceof Duck){
-                if(number<=0.10){
-                    eaten+= ((Duck) alive).getWeight();
-                    synchronized (Dump.animalIsland[x][y]) {
-                        Dump.animalIsland[x][y].animals.remove(alive);
-                    }
+            }else if(alive instanceof Plant){
+                eaten += ((Plant) alive).getWeight();
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.remove(alive);
                 }
             }
         }
+        double weightEndOfHunt = this.weight + eaten;
+        if (weightBeginningToHunt == weightEndOfHunt) {
+            this.weight = this.weight - (this.weight * 0.5);
+        }
+        Dump.animalIsland[x][y].animals = alivezincell;
+
     }
 
     @Override
@@ -77,7 +76,7 @@ public class Boa extends Herbivore {
         int oldy=y;
         int speed=0;
         for(AnimalType type: Dump.species){
-            if(type.name().equalsIgnoreCase("Boa")){
+            if(type.name().equalsIgnoreCase("Mouse")){
                 speed=type.getSpeed();
             }
         }
@@ -127,6 +126,7 @@ public class Boa extends Herbivore {
             }
             int newx=x;
             int newy=y;
+
             synchronized (Dump.animalIsland[oldx][oldy]) {
                 Dump.animalIsland[oldx][oldy].animals.removeIf(x -> x == this);
             }
@@ -143,11 +143,38 @@ public class Boa extends Herbivore {
 
     @Override
     public void starveAndDie() {
-
+        Double idealWeight = 0.0;
+        for (AnimalType type : Dump.species) {
+            if (type.name().equalsIgnoreCase("Mouse")) {
+                idealWeight = type.getEatTillFull();
+            }
+        }
+        if (this.weight < (idealWeight * 0.5)) {
+            synchronized (Dump.animalIsland[x][y]) {
+                Dump.animalIsland[x][y].animals.removeIf(x -> x == this);
+            }
+        }
     }
 
     @Override
     public void multiply() {
-
+        int couple = 0;
+        for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
+            synchronized (Dump.animalIsland[x][y].animals) {
+                if (Dump.animalIsland[x][y].animals.get(i) == this) {
+                    couple++;
+                }
+                if (Dump.animalIsland[x][y].animals.get(i) != this
+                        && Dump.animalIsland[x][y].animals.get(i) instanceof Mouse) {
+                    couple++;
+                    break;
+                }
+            }
+            if (couple == 2) {
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.add(new Mouse());
+                }
+            }
+        }
     }
 }

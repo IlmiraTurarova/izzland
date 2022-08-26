@@ -34,7 +34,9 @@ public class Sheep extends Herbivore implements Animal {
             }
         }
         List<Alive> alivezincell = new ArrayList<>();
-        alivezincell.addAll(Dump.animalIsland[x][y].animals);
+        synchronized (Dump.animalIsland[x][y].animals) {
+            alivezincell.addAll(Dump.animalIsland[x][y].animals);
+        }
         double weightBeginningToHunt = this.weight;
         for (int i = 0; i < alivezincell.size(); i++) {
             Alive alive = alivezincell.get(i);
@@ -52,7 +54,7 @@ public class Sheep extends Herbivore implements Animal {
         }
         double weightEndOfHunt = this.weight + eaten;
         if (weightBeginningToHunt == weightEndOfHunt) {
-            this.weight = this.weight - (this.weight * 0.01);
+            this.weight = this.weight - (this.weight * 0.5);
         }
         Dump.animalIsland[x][y].animals = alivezincell;
 
@@ -115,7 +117,6 @@ public class Sheep extends Herbivore implements Animal {
             int newx = x;
             int newy = y;
 
-            //Dump.animalIsland[oldx][oldy].animals.remove(this);
             synchronized (Dump.animalIsland[oldx][oldy]) {
                 Dump.animalIsland[oldx][oldy].animals.removeIf(x -> x == this);
             }
@@ -147,17 +148,20 @@ public class Sheep extends Herbivore implements Animal {
     public synchronized void multiply() {
         int couple = 0;
         for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
-            if (Dump.animalIsland[x][y].animals.get(i) == this) {
-                couple++;
+            synchronized (Dump.animalIsland[x][y].animals) {
+                if (Dump.animalIsland[x][y].animals.get(i) == this) {
+                    couple++;
+                }
+                if (Dump.animalIsland[x][y].animals.get(i) != this
+                        && Dump.animalIsland[x][y].animals.get(i) instanceof Sheep) {
+                    couple++;
+                    break;
+                }
             }
-            if (Dump.animalIsland[x][y].animals.get(i) != this
-                    && Dump.animalIsland[x][y].animals.get(i) instanceof Sheep) {
-                couple++;
-            }
-        }
-        if (couple == 2) {
-            synchronized (Dump.animalIsland[x][y]) {
-                Dump.animalIsland[x][y].animals.add(this);
+            if (couple == 2) {
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.add(new Sheep());
+                }
             }
         }
     }
