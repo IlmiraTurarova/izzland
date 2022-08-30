@@ -24,13 +24,10 @@ public class Sheep extends Herbivore implements Animal {
 
     @Override
     public synchronized void eat() {
-        double tillFull = 0;
         double eaten = 0;
-        for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Sheep")) {
-                tillFull = type.getEatTillFull();
-            }
-        }
+        Class c = this.getClass();
+        AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
+        double tillFull=thisAnimal.eatTillFull();
         List<Alive> alivezincell = new ArrayList<>();
         synchronized (Dump.animalIsland[x][y].animals) {
             alivezincell.addAll(Dump.animalIsland[x][y].animals);

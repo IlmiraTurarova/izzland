@@ -27,13 +27,10 @@ public class Boa extends Herbivore {
     private double weight;
     @Override
     public synchronized void eat() {
-        double tillFull=0;
-        double eaten=0;
-        for(AnimalType type: Dump.species){
-            if(type.name().equalsIgnoreCase("Boa")){
-                tillFull=type.getEatTillFull();
-            }
-        }
+        double eaten = 0;
+        Class c = this.getClass();
+        AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
+        double tillFull=thisAnimal.eatTillFull();
         Double number=randomN.nextDouble();
         List<Alive> alivezincell = new ArrayList<>();
         synchronized (Dump.animalIsland[x][y].animals) {

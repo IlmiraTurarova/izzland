@@ -21,20 +21,15 @@ import java.util.concurrent.ThreadLocalRandom;
 @AllArgsConstructor
 @AnimalData(idealWeight = 0.01, amimalsInCell = 1000,moveSpeed = 0,eatTillFull = 0)
 public class Caterpillar extends Herbivore {
-    static ThreadLocalRandom randomN = ThreadLocalRandom.current();
     private int x;
     private int y;
     private double weight;
     @Override
     public synchronized void eat() {
-        double tillFull = 0;
         double eaten = 0;
-        for (AnimalType type : Dump.species) {
-            if (type.name().equalsIgnoreCase("Caterpillar")) {
-                tillFull = type.getEatTillFull();
-            }
-        }
-        Double number = randomN.nextDouble();
+        Class c = this.getClass();
+        AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
+        double tillFull=thisAnimal.eatTillFull();
         List<Alive> alivezincell = new ArrayList<>();
         synchronized (Dump.animalIsland[x][y].animals) {
             alivezincell.addAll(Dump.animalIsland[x][y].animals);
