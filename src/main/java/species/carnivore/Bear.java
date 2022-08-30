@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import species.dump.Dump;
 import species.hervivore.*;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -35,7 +37,7 @@ public class Bear extends Carnivore implements Animal {
         synchronized (Dump.animalIsland[x][y].animals) {
             alivezincell.addAll(Dump.animalIsland[x][y].animals);
         }
-        double weightBeginningToHunt = this.weight;
+        double weightBeginningToHunt = this.getWeight();
         for (int i = 0; i < alivezincell.size(); i++) {
             Alive alive = alivezincell.get(i);
             if (eaten >= tillFull) {
@@ -124,4 +126,28 @@ public class Bear extends Carnivore implements Animal {
 
     }
 
+    @Override
+    public void multiply()  {
+        int couple = 0;
+        Class c = this.getClass();
+        AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
+        double weight1=thisAnimal.idealWeight();
+        for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
+            synchronized (Dump.animalIsland[x][y].animals) {
+                if (Dump.animalIsland[x][y].animals.get(i) == this) {
+                    couple++;
+                }
+                if (Dump.animalIsland[x][y].animals.get(i) != this
+                        && Dump.animalIsland[x][y].animals.get(i) instanceof Bear) {
+                    couple++;
+                    break;
+                }
+            }
+            if (couple == 2) {
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.add((new Bear(x,y,weight1)));
+                }
+            }
+        }
+    }
 }

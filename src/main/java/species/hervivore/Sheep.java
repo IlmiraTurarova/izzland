@@ -5,6 +5,7 @@ import animalHierarchy.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import species.carnivore.Bear;
 import species.carnivore.Wolf;
 import species.dump.Dump;
 import species.plants.Plant;
@@ -54,6 +55,29 @@ public class Sheep extends Herbivore implements Animal {
         Dump.animalIsland[x][y].animals = alivezincell;
 
     }
-
+    @Override
+    public void multiply()  {
+        int couple = 0;
+        Class c = this.getClass();
+        AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
+        double weight1=thisAnimal.idealWeight();
+        for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
+            synchronized (Dump.animalIsland[x][y].animals) {
+                if (Dump.animalIsland[x][y].animals.get(i) == this) {
+                    couple++;
+                }
+                if (Dump.animalIsland[x][y].animals.get(i) != this
+                        && Dump.animalIsland[x][y].animals.get(i) instanceof Sheep) {
+                    couple++;
+                    break;
+                }
+            }
+            if (couple == 2) {
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.add((new Sheep(x,y,weight1)));
+                }
+            }
+        }
+    }
 
 }

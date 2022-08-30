@@ -87,37 +87,11 @@ public abstract class Herbivore implements Animal {
         Class c = this.getClass();
         AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
         idealWeight = thisAnimal.idealWeight();
-        if (this.weight < (idealWeight * 0.5)) {
+        if (this.getWeight() < (idealWeight * 0.5)) {
             synchronized (Dump.animalIsland[x][y]) {
-                Dump.animalIsland[x][y].animals.removeIf(x -> x == this);
+                Dump.animalIsland[x][y].animals.remove(this);
             }
         }
     }
 
-    public void multiply() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
-        int couple = 0;
-        Class c = this.getClass();
-        AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
-        double weight1=thisAnimal.idealWeight();
-        Constructor constructor = c.getConstructor(int.class,int.class,double.class);
-        String className=c.getSimpleName();
-        for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
-            synchronized (Dump.animalIsland[x][y].animals) {
-                if (Dump.animalIsland[x][y].animals.get(i) == this) {
-                    couple++;
-                }
-                if (Dump.animalIsland[x][y].animals.get(i) != this
-                        && Dump.animalIsland[x][y].animals.get(i).getClass().getSimpleName().equals(className)) {
-                    couple++;
-                    break;
-                }
-            }
-            if (couple == 2) {
-                synchronized (Dump.animalIsland[x][y]) {
-                    Dump.animalIsland[x][y].animals.add((Alive) constructor.newInstance(x,y,weight1));
-                }
-            }
-        }
-
-    }
 }

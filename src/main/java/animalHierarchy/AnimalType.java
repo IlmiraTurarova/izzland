@@ -1,7 +1,5 @@
 package animalHierarchy;
 
-
-
 public enum AnimalType {
     WOLF(50,30,3,8),
     BOA(15,30,1,3),

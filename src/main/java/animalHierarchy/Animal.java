@@ -9,5 +9,5 @@ public interface Animal extends Alive {
 
     void starveAndDie();
 
-    void multiply() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
+    void multiply();
 }

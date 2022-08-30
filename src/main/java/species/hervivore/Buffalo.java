@@ -58,5 +58,28 @@ public class Buffalo extends Herbivore {
         }
         Dump.animalIsland[x][y].animals = alivezincell;
     }
-
+    @Override
+    public void multiply()  {
+        int couple = 0;
+        Class c = this.getClass();
+        AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
+        double weight1=thisAnimal.idealWeight();
+        for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
+            synchronized (Dump.animalIsland[x][y].animals) {
+                if (Dump.animalIsland[x][y].animals.get(i) == this) {
+                    couple++;
+                }
+                if (Dump.animalIsland[x][y].animals.get(i) != this
+                        && Dump.animalIsland[x][y].animals.get(i) instanceof  Buffalo) {
+                    couple++;
+                    break;
+                }
+            }
+            if (couple == 2) {
+                synchronized (Dump.animalIsland[x][y]) {
+                    Dump.animalIsland[x][y].animals.add((new Buffalo(x,y,weight1)));
+                }
+            }
+        }
+    }
    }
