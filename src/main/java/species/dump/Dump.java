@@ -40,7 +40,7 @@ public class Dump {
         for (int i = 0; i < animalIsland.length; i++) {
             for (int j = 0; j < animalIsland[0].length; j++) {
                 List<Alive> animalsIn = new ArrayList<>();
-                for (int k = 0; k < 5; k++) {
+                for (int k = 0; k < 100; k++) {
                     AnimalType animalType = species.get(randomIndex.nextInt(0, species.size()));
                     animalsIn.add(factory.createAnimal(animalType));
                 }
@@ -105,7 +105,9 @@ public class Dump {
             }
             for (int i = 0; i < animalIsland.length; i++) {
                 for (int j = 0; j < animalIsland[0].length; j++) {
+
                     executorService.execute(animalIsland[i][j]);
+
                 }
             }
             stats.printStats();

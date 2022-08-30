@@ -1,5 +1,7 @@
 package animalHierarchy;
 
+import java.lang.reflect.InvocationTargetException;
+
 public interface Animal extends Alive {
     void eat();
 
@@ -7,5 +9,5 @@ public interface Animal extends Alive {
 
     void starveAndDie();
 
-    void multiply();
+    void multiply() throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException;
 }
