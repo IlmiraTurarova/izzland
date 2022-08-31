@@ -6,8 +6,8 @@ import species.hervivore.*;
 import species.plants.Plant;
 
 public class Stats {
-    public static int eatenAnimals =0;
-    public static int eatenPlants =0;
+    public static volatile int eatenAnimals =0;
+    public static volatile int eatenPlants =0;
 
     public void printStats() {
 

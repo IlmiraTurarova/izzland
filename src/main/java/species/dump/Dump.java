@@ -15,6 +15,7 @@ public class Dump {
     ThreadLocalRandom randomIndex = ThreadLocalRandom.current();
     public static AnimalFactory factory = new AnimalFactory();
     public volatile static Cell[][] animalIsland = new Cell[10][10];
+    public static int day=1;
 
     public static void filInSpecies() {
         species.add(AnimalType.WOLF);
@@ -87,22 +88,32 @@ public class Dump {
         filInSpecies();
         filInIsland();
         fillInParams();
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
+        Stats stats = new Stats();
+        Object lock = new Object();
+
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(3);
 
         for (int i = 0; i < animalIsland.length; i++) {
             for (int j = 0; j < animalIsland[0].length; j++) {
 
-                executorService.scheduleAtFixedRate(animalIsland[i][j], 0, 2, TimeUnit.SECONDS);
-                executorService.scheduleAtFixedRate(() -> {
-                    addPlants();
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                }, 0, 5, TimeUnit.SECONDS);
-
+                synchronized (lock) {
+                    executorService.scheduleAtFixedRate(animalIsland[i][j], 0, 1, TimeUnit.SECONDS);
+                }
+                synchronized (lock) {
+                    executorService.scheduleAtFixedRate(() -> {
+                        addPlants();
+                    }, 0, 5, TimeUnit.SECONDS);
+                }
             }
+        }
+        synchronized (lock) {
+            executorService.scheduleAtFixedRate(() -> {
+                System.out.println("День " + day);
+                day++;
+                stats.printStats();
+                Stats.eatenAnimals = 0;
+                Stats.eatenPlants = 0;
+            }, 0, 1, TimeUnit.SECONDS);
         }
 
         Thread.sleep(31000);
