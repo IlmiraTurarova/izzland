@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import species.carnivore.Bear;
 import species.carnivore.Wolf;
 import species.dump.Dump;
+import species.dump.Stats;
 import species.plants.Plant;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class Sheep extends Herbivore implements Animal {
             if (alive instanceof Plant) {
                 eaten += ((Plant) alive).getWeight();
                 alivezincell.remove(alive);
+                Stats.eatenPlants++;
             }
         }
         double weightEndOfHunt = this.weight + eaten;

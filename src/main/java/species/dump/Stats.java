@@ -6,6 +6,9 @@ import species.hervivore.*;
 import species.plants.Plant;
 
 public class Stats {
+    public static int eatenAnimals =0;
+    public static int eatenPlants =0;
+
     public void printStats() {
 
         int wolfCount = 0;
@@ -87,7 +90,11 @@ public class Stats {
                 + "  \uD83D\uDC10: " + goatCount
                 + "  \uD83D\uDC07: " + rabbitCount
                 + "  \uD83D\uDC0E: " + horseCount
-                + " \uD83C\uDF3F: " + plantCount);
+                + " \uD83C\uDF3F: " + plantCount
+                + " \uD83D\uDC80: " + eatenAnimals
+                + " \uD83E\uDD40: " + eatenPlants
+        );
+
     }
 }
 

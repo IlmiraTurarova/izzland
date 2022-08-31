@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import species.carnivore.Bear;
 import species.dump.Dump;
+import species.dump.Stats;
 import species.plants.Plant;
 
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ public class Horse extends Herbivore {
                 eaten += ((Plant) alive).getWeight();
                 synchronized (Dump.animalIsland[x][y]) {
                     Dump.animalIsland[x][y].animals.remove(alive);
+                    Stats.eatenPlants++;
                 }
             }
         }

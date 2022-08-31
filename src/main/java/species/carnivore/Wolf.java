@@ -2,12 +2,12 @@ package species.carnivore;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalData;
-import animalHierarchy.AnimalType;
 import animalHierarchy.Carnivore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import species.dump.Dump;
+import species.dump.Stats;
 import species.hervivore.*;
 
 import java.util.ArrayList;
@@ -49,46 +49,55 @@ public class Wolf extends Carnivore {
                 if (number <= 0.10) {
                     eaten += ((Horse) alive).getWeight();
                     alivezincell.remove(alive);
+                    Stats.eatenAnimals++;
                 }
             } else if (alive instanceof Deer) {
                 if (number <= 0.15) {
                     eaten += ((Deer) alive).getWeight();
                     alivezincell.remove(alive);
+                    Stats.eatenAnimals++;
                 }
             } else if (alive instanceof Rabbit) {
                 if (number <= 0.60) {
                     eaten += ((Rabbit) alive).getWeight();
                     alivezincell.remove(alive);
+                    Stats.eatenAnimals++;
                 }
             } else if (alive instanceof Mouse) {
                 if (number <= 0.80) {
                     eaten += ((Mouse) alive).getWeight();
                     alivezincell.remove(alive);
+                    Stats.eatenAnimals++;
                 }
             } else if (alive instanceof Goat) {
                 if (number <= 0.60) {
                     eaten += ((Goat) alive).getWeight();
                     alivezincell.remove(alive);
+                    Stats.eatenAnimals++;
                 }
             } else if (alive instanceof Sheep) {
                 if (number <= 0.70) {
                     eaten += ((Sheep) alive).getWeight();
                     alivezincell.remove(alive);
+                    Stats.eatenAnimals++;
                 }
             } else if (alive instanceof Boar) {
                 if (number <= 0.15) {
                     eaten += ((Boar) alive).getWeight();
                     alivezincell.remove(alive);
+                    Stats.eatenAnimals++;
                 }
             } else if (alive instanceof Buffalo) {
                 if (number <= 0.10) {
                     eaten += ((Buffalo) alive).getWeight();
                     alivezincell.remove(alive);
+                    Stats.eatenAnimals++;
                 }
             } else if (alive instanceof Duck) {
                 if (number <= 0.40) {
                     eaten += ((Duck) alive).getWeight();
                     alivezincell.remove(alive);
+                    Stats.eatenAnimals++;
                 }
             }
         }

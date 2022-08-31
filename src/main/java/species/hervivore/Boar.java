@@ -2,14 +2,12 @@ package species.hervivore;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalData;
-import animalHierarchy.AnimalType;
 import animalHierarchy.Herbivore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import species.carnivore.Bear;
-import species.carnivore.Wolf;
 import species.dump.Dump;
+import species.dump.Stats;
 import species.plants.Plant;
 
 import java.util.ArrayList;
@@ -51,6 +49,7 @@ public class Boar extends Herbivore {
                     eaten += ((Mouse) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             } else if (alive instanceof Caterpillar) {
@@ -58,12 +57,14 @@ public class Boar extends Herbivore {
                     eaten += ((Caterpillar) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             } else if (alive instanceof Plant) {
                 eaten += ((Plant) alive).getWeight();
                 synchronized (Dump.animalIsland[x][y]) {
                     Dump.animalIsland[x][y].animals.remove(alive);
+                    Stats.eatenPlants++;
                 }
             }
         }

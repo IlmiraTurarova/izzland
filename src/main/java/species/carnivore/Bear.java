@@ -6,10 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import species.dump.Dump;
+import species.dump.Stats;
 import species.hervivore.*;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -51,6 +50,7 @@ public class Bear extends Carnivore implements Animal {
                     eaten += ((Boa) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             } else if (alive instanceof Horse) {
@@ -58,6 +58,7 @@ public class Bear extends Carnivore implements Animal {
                     eaten += ((Horse) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             } else if (alive instanceof Deer) {
@@ -65,6 +66,7 @@ public class Bear extends Carnivore implements Animal {
                     eaten += ((Deer) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             } else if (alive instanceof Rabbit) {
@@ -72,6 +74,7 @@ public class Bear extends Carnivore implements Animal {
                     eaten += ((Rabbit) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             } else if (alive instanceof Mouse) {
@@ -79,6 +82,7 @@ public class Bear extends Carnivore implements Animal {
                     eaten += ((Mouse) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             } else if (alive instanceof Goat) {
@@ -86,6 +90,7 @@ public class Bear extends Carnivore implements Animal {
                     eaten += ((Goat) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             } else if (alive instanceof Sheep) {
@@ -93,6 +98,7 @@ public class Bear extends Carnivore implements Animal {
                     eaten += ((Sheep) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             } else if (alive instanceof Boar) {
@@ -100,6 +106,7 @@ public class Bear extends Carnivore implements Animal {
                     eaten += ((Boar) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             } else if (alive instanceof Buffalo) {
@@ -107,6 +114,7 @@ public class Bear extends Carnivore implements Animal {
                     eaten += ((Buffalo) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             } else if (alive instanceof Duck) {
@@ -114,6 +122,7 @@ public class Bear extends Carnivore implements Animal {
                     eaten += ((Duck) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             }

@@ -2,8 +2,8 @@ package species.carnivore;
 
 import animalHierarchy.Alive;
 import animalHierarchy.AnimalData;
-import animalHierarchy.AnimalType;
 import animalHierarchy.Carnivore;
+import species.dump.Stats;
 import species.hervivore.Caterpillar;
 import species.hervivore.Duck;
 import species.hervivore.Mouse;
@@ -51,6 +51,7 @@ public class Fox extends Carnivore {
                     eaten+= ((Rabbit) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             }else if(alive instanceof Mouse){
@@ -58,6 +59,7 @@ public class Fox extends Carnivore {
                     eaten+= ((Mouse) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             }else if(alive instanceof Duck){
@@ -65,6 +67,7 @@ public class Fox extends Carnivore {
                     eaten+= ((Duck) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             }else if(alive instanceof Caterpillar){
@@ -72,6 +75,7 @@ public class Fox extends Carnivore {
                     eaten+= ((Caterpillar) alive).getWeight();
                     synchronized (Dump.animalIsland[x][y]) {
                         Dump.animalIsland[x][y].animals.remove(alive);
+                        Stats.eatenAnimals++;
                     }
                 }
             }

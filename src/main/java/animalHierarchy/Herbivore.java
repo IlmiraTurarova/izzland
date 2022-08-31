@@ -18,10 +18,10 @@ public abstract class Herbivore implements Animal {
     public void move() {
         int oldx = x;
         int oldy = y;
-        int speed = 0;
         Class c = this.getClass();
         AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
-        speed = thisAnimal.moveSpeed();
+        int speed=thisAnimal.moveSpeed();
+        int animalsInCell=thisAnimal.amimalsInCell();
         int random = (int) (Math.random() * 4);
         try {
             if (random == 0) {
@@ -66,6 +66,15 @@ public abstract class Herbivore implements Animal {
                     throw new Exception();
                 }
             }
+            int animalsCount=0;
+            for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
+                if(Dump.animalIsland[x][y].animals.get(1).getClass().getSimpleName().equalsIgnoreCase(c.getSimpleName())){
+                    animalsCount++;
+                }
+            }
+            if(animalsCount>=animalsInCell){
+                throw new Exception();
+            }
             int newx = x;
             int newy = y;
 
@@ -87,9 +96,9 @@ public abstract class Herbivore implements Animal {
         Class c = this.getClass();
         AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
         idealWeight = thisAnimal.idealWeight();
-        synchronized (Dump.animalIsland[x][y]) {
-        if (this.getWeight() < (idealWeight * 0.5)) {
 
+        if (this.getWeight() < (idealWeight * 0.5)) {
+            synchronized (Dump.animalIsland[x][y]) {
                 Dump.animalIsland[x][y].animals.remove(this);
             }
         }

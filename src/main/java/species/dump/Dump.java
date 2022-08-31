@@ -7,9 +7,7 @@ import species.plants.Plant;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.*;
 
 public class Dump {
     public static List<AnimalType> species = new ArrayList<>();
@@ -67,7 +65,7 @@ public class Dump {
                                 ((Herbivore) alive).setY(j);
                             }
                         }
-                    } else if(alive instanceof Carnivore){
+                    } else if (alive instanceof Carnivore) {
                         String className = alive.getClass().getName().toUpperCase().split("\\.")[2];
                         for (AnimalType type : species) {
                             if (className.equals(type.name())) {
@@ -76,7 +74,7 @@ public class Dump {
                                 ((Carnivore) alive).setY(j);
                             }
                         }
-                    } else if(alive instanceof Plant){
+                    } else if (alive instanceof Plant) {
                         ((Plant) alive).setX(i);
                         ((Plant) alive).setX(j);
                     }
@@ -89,30 +87,36 @@ public class Dump {
         filInSpecies();
         filInIsland();
         fillInParams();
-        Stats stats = new Stats();
-        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(2);
 
-        for (int k = 0; k < 31; k++) {
-            System.out.println("День "+k+":");
-//            if(k%5==0){
-//                for (int i = 0; i < animalIsland.length; i++) {
-//                    for (int j = 0; j < animalIsland[0].length; j++) {
-//                        for (int l = 0; l < 2; l++) {
-//                            animalIsland[i][j].animals.add(new Plant());
-//                        }
-//                    }
-//                }
-//            }
-            for (int i = 0; i < animalIsland.length; i++) {
-                for (int j = 0; j < animalIsland[0].length; j++) {
+        for (int i = 0; i < animalIsland.length; i++) {
+            for (int j = 0; j < animalIsland[0].length; j++) {
 
-                    executorService.execute(animalIsland[i][j]);
+                executorService.scheduleAtFixedRate(animalIsland[i][j], 0, 2, TimeUnit.SECONDS);
+                executorService.scheduleAtFixedRate(() -> {
+                    addPlants();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }, 0, 5, TimeUnit.SECONDS);
 
+            }
+        }
+
+        Thread.sleep(31000);
+        executorService.shutdown();
+    }
+
+
+    public static void addPlants() {
+        for (int i = 0; i < animalIsland.length; i++) {
+            for (int j = 0; j < animalIsland[0].length; j++) {
+                for (int k = 0; k < 4; k++) {
+                    animalIsland[i][j].animals.add(new Plant());
                 }
             }
-            stats.printStats();
-            Thread.sleep(1000);
         }
-        executorService.shutdown();
     }
 }
