@@ -94,15 +94,15 @@ public class Dump {
 
         for (int k = 0; k < 31; k++) {
             System.out.println("День "+k+":");
-            if(k%5==0){
-                for (int i = 0; i < animalIsland.length; i++) {
-                    for (int j = 0; j < animalIsland[0].length; j++) {
-                        for (int l = 0; l < 2; l++) {
-                            animalIsland[i][j].animals.add(new Plant());
-                        }
-                    }
-                }
-            }
+//            if(k%5==0){
+//                for (int i = 0; i < animalIsland.length; i++) {
+//                    for (int j = 0; j < animalIsland[0].length; j++) {
+//                        for (int l = 0; l < 2; l++) {
+//                            animalIsland[i][j].animals.add(new Plant());
+//                        }
+//                    }
+//                }
+//            }
             for (int i = 0; i < animalIsland.length; i++) {
                 for (int j = 0; j < animalIsland[0].length; j++) {
 

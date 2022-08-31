@@ -5,10 +5,8 @@ import animalHierarchy.Alive;
 import animalHierarchy.Animal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.ToString;
 import species.dump.Dump;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 @Data
@@ -40,16 +38,15 @@ public class Cell extends Thread {
         synchronized (lock) {
             for (int i = 0; i < animals.size(); i++) {
                 if (animals.get(i) instanceof Animal) {
-                    synchronized (Dump.animalIsland[x][y].animals) {
                         ((Animal) animals.get(i)).starveAndDie();
-                    }
                 }
+
             }
         }
         synchronized (lock) {
             for (int i = 0; i < animals.size(); i++) {
                 if (animals.get(i) instanceof Animal) {
-                        ((Animal) animals.get(i)).multiply();
+                    ((Animal) animals.get(i)).multiply();
                 }
             }
         }

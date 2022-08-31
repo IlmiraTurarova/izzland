@@ -87,8 +87,9 @@ public abstract class Herbivore implements Animal {
         Class c = this.getClass();
         AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
         idealWeight = thisAnimal.idealWeight();
+        synchronized (Dump.animalIsland[x][y]) {
         if (this.getWeight() < (idealWeight * 0.5)) {
-            synchronized (Dump.animalIsland[x][y]) {
+
                 Dump.animalIsland[x][y].animals.remove(this);
             }
         }

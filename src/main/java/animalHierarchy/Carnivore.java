@@ -78,9 +78,9 @@ public abstract class Carnivore implements Animal{
         Class c=this.getClass();
         AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
         Double idealWeight=thisAnimal.idealWeight();
+        synchronized (Dump.animalIsland[x][y]) {
         if (this.getWeight() < (idealWeight * 0.5)) {
-            synchronized (Dump.animalIsland[x][y]) {
-                Dump.animalIsland[x][y].animals.removeIf(x -> x == this);
+            Dump.animalIsland[x][y].animals.removeIf(x -> x == this);
             }
         }
     }

@@ -87,8 +87,9 @@ public class Eagle extends Carnivore {
         Class c = this.getClass();
         AnimalData thisAnimal = (AnimalData) c.getAnnotation(AnimalData.class);
         double weight1=thisAnimal.idealWeight();
+        synchronized (Dump.animalIsland[x][y]) {
         for (int i = 0; i < Dump.animalIsland[x][y].animals.size(); i++) {
-            synchronized (Dump.animalIsland[x][y].animals) {
+
                 if (Dump.animalIsland[x][y].animals.get(i) == this) {
                     couple++;
                 }
