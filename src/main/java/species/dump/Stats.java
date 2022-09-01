@@ -75,25 +75,43 @@ public class Stats {
             }
         }
 
-        System.out.println("\uD83D\uDC3A: " + wolfCount
-                + " \uD83D\uDC11: " + sheepCount
-                + " \uD83D\uDC3B: " + bearCount
-                + " \uD83E\uDD8A: " + foxCount
-                + "  \uD83D\uDC0D: " + boaCount
-                + "  \uD83E\uDD85: " + eagleCount
-                + "  \uD83D\uDC17: " + boarCount
-                + "  \uD83D\uDC03: " + buffaloCount
-                + "  \uD83D\uDC1B: " + caterpillarCount
-                + "  \uD83E\uDD8C: " + deerCount
-                + "  \uD83D\uDC01: " + mouseCount
-                + "  \uD83E\uDD86: " + duckCount
-                + "  \uD83D\uDC10: " + goatCount
-                + "  \uD83D\uDC07: " + rabbitCount
-                + "  \uD83D\uDC0E: " + horseCount
-                + " \uD83C\uDF3F: " + plantCount
-                + " \uD83D\uDC80: " + eatenAnimals
-                + " \uD83E\uDD40: " + eatenPlants
-        );
+//        System.out.println("\uD83D\uDC3A: " + wolfCount
+//                + " \uD83D\uDC11: " + sheepCount
+//                + " \uD83D\uDC3B: " + bearCount
+//                + " \uD83E\uDD8A: " + foxCount
+//                + "  \uD83D\uDC0D: " + boaCount
+//                + "  \uD83E\uDD85: " + eagleCount
+//                + "  \uD83D\uDC17: " + boarCount
+//                + "  \uD83D\uDC03: " + buffaloCount
+//                + "  \uD83D\uDC1B: " + caterpillarCount
+//                + "  \uD83E\uDD8C: " + deerCount
+//                + "  \uD83D\uDC01: " + mouseCount
+//                + "  \uD83E\uDD86: " + duckCount
+//                + "  \uD83D\uDC10: " + goatCount
+//                + "  \uD83D\uDC07: " + rabbitCount
+//                + "  \uD83D\uDC0E: " + horseCount
+//                + " \uD83C\uDF3F: " + plantCount
+//                + " \uD83D\uDC80: " + eatenAnimals
+//                + " \uD83E\uDD40: " + eatenPlants
+//        );
+        System.out.println("wolves: " + wolfCount
+                + " sheep: " + sheepCount
+                + " bears: " + bearCount
+                + " foxes: " + foxCount
+                + "  boas: " + boaCount
+                + "  eagles: " + eagleCount
+                + "  boars: " + boarCount
+                + "  buffaloes: " + buffaloCount
+                + "  caterpillars: " + caterpillarCount
+                + "  deer: " + deerCount
+                + "  mice: " + mouseCount
+                + "  ducks: " + duckCount
+                + "  goats: " + goatCount
+                + "  rabbits: " + rabbitCount
+                + "  horses " + horseCount
+                + " plants: " + plantCount
+                + " animals eaten: " + eatenAnimals
+                + " plants eaten: " + eatenPlants);
 
     }
 }

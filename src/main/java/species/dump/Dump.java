@@ -108,7 +108,7 @@ public class Dump {
         }
         synchronized (lock) {
             executorService.scheduleAtFixedRate(() -> {
-                System.out.println("День " + day);
+                System.out.println("Day " + day);
                 day++;
                 stats.printStats();
                 Stats.eatenAnimals = 0;
